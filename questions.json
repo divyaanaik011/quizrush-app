@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Which data structure uses FIFO (First In First Out) order?",
+    "options": ["Stack", "Queue", "Tree", "Graph"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the time complexity of binary search?",
+    "options": ["O(n)", "O(n log n)", "O(log n)", "O(1)"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which SQL clause is used to filter groups after GROUP BY?",
+    "options": ["WHERE", "HAVING", "FILTER", "ORDER BY"],
+    "correctIndex": 1
+  },
+  {
+    "question": "In Java, which keyword is used to inherit a class?",
+    "options": ["implements", "extends", "inherits", "super"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which of these is NOT a NoSQL database?",
+    "options": ["MongoDB", "Redis", "PostgreSQL", "Cassandra"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What does CNN stand for in Deep Learning?",
+    "options": ["Central Neural Network", "Convolutional Neural Network", "Connected Node Network", "Core Neural Node"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which HTTP method is typically used to update a resource?",
+    "options": ["GET", "POST", "PUT", "DELETE"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What is the default port for HTTP?",
+    "options": ["21", "80", "443", "8080"],
+    "correctIndex": 1
+  }
+]

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuizRush — Join</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">QuizRush</div>
+
+    <!-- JOIN STATE -->
+    <div id="joinView" class="card" style="display:flex; flex-direction:column; gap:14px;">
+      <h2 class="display" style="font-size:22px;">Join a Quiz</h2>
+      <input type="text" id="roomCodeInput" placeholder="Room code" maxlength="5" autocapitalize="characters">
+      <input type="text" id="nameInput" placeholder="Your name" maxlength="20">
+      <button class="btn-primary" id="joinBtn">Join</button>
+      <p class="error-text" id="joinError"></p>
+    </div>
+
+    <!-- WAITING STATE -->
+    <div id="waitingView" class="card" style="display:none; flex-direction:column; gap:10px; align-items:center; text-align:center;">
+      <h2 class="display" style="font-size:20px;">You're in!</h2>
+      <p class="muted">Waiting for the host to start the quiz…</p>
+    </div>
+
+    <!-- QUESTION STATE -->
+    <div id="questionView" class="card" style="display:none; flex-direction:column; gap:14px;">
+      <div class="question-index" id="qIndex"></div>
+      <h2 class="display" id="qText" style="font-size:20px;"></h2>
+      <div class="timer-bar"><div class="timer-bar-fill" id="timerFill" style="width:100%;"></div></div>
+      <div class="options-grid" id="optionsGrid"></div>
+      <p class="muted" id="answeredMsg" style="display:none;">Answer locked in — waiting for others…</p>
+    </div>
+
+    <!-- ROUND RESULT STATE -->
+    <div id="resultView" class="card" style="display:none; flex-direction:column; gap:10px; align-items:center; text-align:center;">
+      <h2 class="display" id="resultHeading" style="font-size:22px;"></h2>
+      <p class="muted" id="resultSub"></p>
+      <p style="font-size:15px;">Your score: <strong id="myScore">0</strong></p>
+    </div>
+
+    <!-- FINAL STATE -->
+    <div id="finalView" class="card" style="display:none; flex-direction:column; gap:14px;">
+      <h2 class="display" style="font-size:22px;">Final Results 🏆</h2>
+      <div id="finalLeaderboard" class="leaderboard"></div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let myScore = 0;
+
+    const joinView = document.getElementById('joinView');
+    const waitingView = document.getElementById('waitingView');
+    const questionView = document.getElementById('questionView');
+    const resultView = document.getElementById('resultView');
+    const finalView = document.getElementById('finalView');
+
+    function hideAll() {
+      [joinView, waitingView, questionView, resultView, finalView].forEach(v => v.style.display = 'none');
+    }
+
+    document.getElementById('joinBtn').addEventListener('click', () => {
+      const roomCode = document.getElementById('roomCodeInput').value.trim();
+      const name = document.getElementById('nameInput').value.trim();
+      document.getElementById('joinError').textContent = '';
+      socket.emit('join-room', { roomCode, name });
+    });
+
+    socket.on('join-error', ({ message }) => {
+      document.getElementById('joinError').textContent = message;
+    });
+
+    socket.on('join-success', () => {
+      hideAll();
+      waitingView.style.display = 'flex';
+    });
+
+    socket.on('new-question', (data) => {
+      hideAll();
+      questionView.style.display = 'flex';
+
+      document.getElementById('qIndex').textContent = `Question ${data.index + 1} of ${data.total}`;
+      document.getElementById('qText').textContent = data.question;
+      document.getElementById('answeredMsg').style.display = 'none';
+
+      const grid = document.getElementById('optionsGrid');
+      grid.innerHTML = '';
+      data.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.addEventListener('click', () => {
+          Array.from(grid.children).forEach(b => b.disabled = true);
+          socket.emit('submit-answer', { answerIndex: i });
+          document.getElementById('answeredMsg').style.display = 'block';
+        });
+        grid.appendChild(btn);
+      });
+
+      const fill = document.getElementById('timerFill');
+      fill.style.transition = 'none';
+      fill.style.width = '100%';
+      requestAnimationFrame(() => {
+        fill.style.transition = `width ${data.timeLimitSeconds}s linear`;
+        fill.style.width = '0%';
+      });
+    });
+
+    socket.on('answer-result', ({ correct, scoreNow }) => {
+      myScore = scoreNow;
+      const grid = document.getElementById('optionsGrid');
+      Array.from(grid.children).forEach(b => b.disabled = true);
+    });
+
+    socket.on('round-results', () => {
+      hideAll();
+      resultView.style.display = 'flex';
+      document.getElementById('resultHeading').textContent = 'Round Over';
+      document.getElementById('resultSub').textContent = 'Check the host screen for full standings';
+      document.getElementById('myScore').textContent = myScore;
+    });
+
+    socket.on('quiz-ended', ({ leaderboard }) => {
+      hideAll();
+      finalView.style.display = 'flex';
+      const listEl = document.getElementById('finalLeaderboard');
+      listEl.innerHTML = '';
+      leaderboard.forEach((p, i) => {
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.innerHTML = `<span><span class="rank">#${i + 1}</span>${p.name}</span><span class="score">${p.score}</span>`;
+        listEl.appendChild(row);
+      });
+    });
+
+    socket.on('host-disconnected', () => {
+      hideAll();
+      joinView.style.display = 'flex';
+      document.getElementById('joinError').textContent = 'Host disconnected. The quiz has ended.';
+    });
+  </script>
+</body>
+</html>

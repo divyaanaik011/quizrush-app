@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuizRush — Host</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">Host Console</div>
+    <h1 class="display" style="font-size:32px;">QuizRush</h1>
+
+    <!-- LOBBY STATE -->
+    <div id="lobby" class="card" style="display:flex; flex-direction:column; gap:18px; align-items:center;">
+      <p class="muted">Room code — players enter this to join</p>
+      <div id="codeTiles" class="code-tiles"></div>
+
+      <div style="width:100%;">
+        <p class="muted" id="playerCount">0 players joined</p>
+        <div id="playerList" class="player-list"></div>
+      </div>
+
+      <button class="btn-primary" id="startBtn" disabled style="width:100%;">Start Quiz</button>
+      <p class="error-text" id="hostError"></p>
+    </div>
+
+    <!-- QUESTION STATE -->
+    <div id="questionView" class="card" style="display:none; flex-direction:column; gap:14px;">
+      <div class="question-index" id="qIndex"></div>
+      <h2 class="display" id="qText" style="font-size:22px;"></h2>
+      <div class="timer-bar"><div class="timer-bar-fill" id="timerFill" style="width:100%;"></div></div>
+      <p class="muted" id="answeredCount">0 of 0 answered</p>
+      <button class="btn-secondary" id="revealBtn">Reveal Results Now</button>
+    </div>
+
+    <!-- LEADERBOARD STATE -->
+    <div id="leaderboardView" class="card" style="display:none; flex-direction:column; gap:14px;">
+      <h2 class="display" style="font-size:22px;">Standings</h2>
+      <div id="leaderboardList" class="leaderboard"></div>
+      <button class="btn-primary" id="nextBtn"></button>
+    </div>
+
+    <a class="link muted" href="index.html">← Back</a>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let roomCode = null;
+
+    socket.emit('create-room');
+
+    socket.on('room-created', ({ roomCode: code }) => {
+      roomCode = code;
+      const tilesEl = document.getElementById('codeTiles');
+      tilesEl.innerHTML = '';
+      code.split('').forEach(ch => {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.textContent = ch;
+        tilesEl.appendChild(tile);
+      });
+    });
+
+    socket.on('player-list-update', (players) => {
+      document.getElementById('playerCount').textContent =
+        players.length + (players.length === 1 ? ' player joined' : ' players joined');
+      const listEl = document.getElementById('playerList');
+      listEl.innerHTML = '';
+      players.forEach(p => {
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.innerHTML = `<span>${p.name}</span>`;
+        listEl.appendChild(row);
+      });
+      document.getElementById('startBtn').disabled = players.length === 0;
+    });
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      socket.emit('start-quiz');
+    });
+
+    document.getElementById('revealBtn').addEventListener('click', () => {
+      socket.emit('reveal-results');
+    });
+
+    document.getElementById('hostError').textContent = '';
+    socket.on('host-error', ({ message }) => {
+      document.getElementById('hostError').textContent = message;
+    });
+
+    let timerInterval = null;
+
+    socket.on('new-question', (data) => {
+      document.getElementById('lobby').style.display = 'none';
+      document.getElementById('leaderboardView').style.display = 'none';
+      document.getElementById('questionView').style.display = 'flex';
+
+      document.getElementById('qIndex').textContent = `Question ${data.index + 1} of ${data.total}`;
+      document.getElementById('qText').textContent = data.question;
+      document.getElementById('answeredCount').textContent = `0 of players answered`;
+
+      const fill = document.getElementById('timerFill');
+      fill.style.transition = 'none';
+      fill.style.width = '100%';
+      requestAnimationFrame(() => {
+        fill.style.transition = `width ${data.timeLimitSeconds}s linear`;
+        fill.style.width = '0%';
+      });
+    });
+
+    socket.on('answer-progress', ({ answered, total }) => {
+      document.getElementById('answeredCount').textContent = `${answered} of ${total} answered`;
+    });
+
+    socket.on('round-results', ({ leaderboard, isLastQuestion }) => {
+      document.getElementById('questionView').style.display = 'none';
+      document.getElementById('leaderboardView').style.display = 'flex';
+
+      const listEl = document.getElementById('leaderboardList');
+      listEl.innerHTML = '';
+      leaderboard.forEach((p, i) => {
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.innerHTML = `<span><span class="rank">#${i + 1}</span>${p.name}</span><span class="score">${p.score}</span>`;
+        listEl.appendChild(row);
+      });
+
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.textContent = isLastQuestion ? 'Show Final Results' : 'Next Question';
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      socket.emit('next-question');
+    });
+
+    socket.on('quiz-ended', ({ leaderboard }) => {
+      document.getElementById('questionView').style.display = 'none';
+      document.getElementById('leaderboardView').style.display = 'flex';
+      document.getElementById('nextBtn').style.display = 'none';
+
+      const listEl = document.getElementById('leaderboardList');
+      listEl.innerHTML = '';
+      const heading = document.querySelector('#leaderboardView h2');
+      heading.textContent = 'Final Results 🏆';
+      leaderboard.forEach((p, i) => {
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.innerHTML = `<span><span class="rank">#${i + 1}</span>${p.name}</span><span class="score">${p.score}</span>`;
+        listEl.appendChild(row);
+      });
+    });
+  </script>
+</body>
+</html>
