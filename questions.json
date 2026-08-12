@@ -1,42 +1,127 @@
 [
   {
-    "question": "Which data structure uses FIFO (First In First Out) order?",
-    "options": ["Stack", "Queue", "Tree", "Graph"],
+    "question": "Which planet is known as the Red Planet?",
+    "options": ["Venus", "Mars", "Jupiter", "Saturn"],
     "correctIndex": 1
   },
   {
-    "question": "What is the time complexity of binary search?",
-    "options": ["O(n)", "O(n log n)", "O(log n)", "O(1)"],
+    "question": "How many continents are there on Earth?",
+    "options": ["5", "6", "7", "8"],
     "correctIndex": 2
   },
   {
-    "question": "Which SQL clause is used to filter groups after GROUP BY?",
-    "options": ["WHERE", "HAVING", "FILTER", "ORDER BY"],
-    "correctIndex": 1
+    "question": "Which is the largest ocean in the world?",
+    "options": ["Atlantic", "Indian", "Arctic", "Pacific"],
+    "correctIndex": 3
   },
   {
-    "question": "In Java, which keyword is used to inherit a class?",
-    "options": ["implements", "extends", "inherits", "super"],
-    "correctIndex": 1
-  },
-  {
-    "question": "Which of these is NOT a NoSQL database?",
-    "options": ["MongoDB", "Redis", "PostgreSQL", "Cassandra"],
+    "question": "Who painted the Mona Lisa?",
+    "options": ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Michelangelo"],
     "correctIndex": 2
   },
   {
-    "question": "What does CNN stand for in Deep Learning?",
-    "options": ["Central Neural Network", "Convolutional Neural Network", "Connected Node Network", "Core Neural Node"],
+    "question": "Which country is famous for the Eiffel Tower?",
+    "options": ["Italy", "France", "Spain", "Germany"],
     "correctIndex": 1
   },
   {
-    "question": "Which HTTP method is typically used to update a resource?",
-    "options": ["GET", "POST", "PUT", "DELETE"],
+    "question": "What is the national sport of India?",
+    "options": ["Cricket", "Hockey", "Kabaddi", "Football"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many players are there in a cricket team?",
+    "options": ["9", "10", "11", "12"],
     "correctIndex": 2
   },
   {
-    "question": "What is the default port for HTTP?",
-    "options": ["21", "80", "443", "8080"],
+    "question": "Which is the longest river in the world?",
+    "options": ["Amazon", "Nile", "Ganges", "Yangtze"],
     "correctIndex": 1
+  },
+  {
+    "question": "What is the capital of Japan?",
+    "options": ["Seoul", "Beijing", "Tokyo", "Bangkok"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which fruit is known as the 'King of Fruits'?",
+    "options": ["Mango", "Apple", "Banana", "Pineapple"],
+    "correctIndex": 0
+  },
+  {
+    "question": "How many bones are there in an adult human body?",
+    "options": ["186", "206", "226", "246"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which gas do plants absorb from the atmosphere for photosynthesis?",
+    "options": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What is the closest star to Earth?",
+    "options": ["Proxima Centauri", "The Sun", "Sirius", "Betelgeuse"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Which animal is known as the 'Ship of the Desert'?",
+    "options": ["Horse", "Camel", "Donkey", "Elephant"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many hearts does an octopus have?",
+    "options": ["1", "2", "3", "4"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which country has the most number of natural lakes?",
+    "options": ["USA", "Russia", "Canada", "Finland"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which is the smallest country in the world by area?",
+    "options": ["Monaco", "San Marino", "Vatican City", "Malta"],
+    "correctIndex": 2
+  },
+  {
+    "question": "What does 'www' stand for in a website address?",
+    "options": ["World Wide Web", "World Web Wide", "Wide World Web", "Web World Wide"],
+    "correctIndex": 0
+  },
+  {
+    "question": "Which Indian festival is known as the 'Festival of Lights'?",
+    "options": ["Holi", "Diwali", "Navratri", "Onam"],
+    "correctIndex": 1
+  },
+  {
+    "question": "How many colors are there in a rainbow?",
+    "options": ["5", "6", "7", "8"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which sport is associated with the term 'Grand Slam'?",
+    "options": ["Cricket", "Tennis", "Football", "Basketball"],
+    "correctIndex": 1
+  },
+  {
+    "question": "What is the currency of Japan?",
+    "options": ["Won", "Yuan", "Yen", "Ringgit"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which is the tallest animal in the world?",
+    "options": ["Elephant", "Giraffe", "Ostrich", "Camel"],
+    "correctIndex": 1
+  },
+  {
+    "question": "Who is known as the 'Father of the Nation' in India?",
+    "options": ["Jawaharlal Nehru", "Subhas Chandra Bose", "Mahatma Gandhi", "Sardar Patel"],
+    "correctIndex": 2
+  },
+  {
+    "question": "Which is the largest desert in the world?",
+    "options": ["Sahara", "Gobi", "Antarctic Desert", "Arabian Desert"],
+    "correctIndex": 2
   }
 ]
